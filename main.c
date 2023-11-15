@@ -9,7 +9,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define ROWS 4
+#define ROWS 5
 #define COLS 4
 
 typedef struct game_grid{ 
@@ -22,10 +22,10 @@ void print_grid( game_grid *theGrid) {
     printf("\n\n");
 
     printf("---------------------\n");
-    for(int rows=0;rows<ROWS;rows++) {
-        for(int cols=0;cols<COLS;cols++) {
-            if(theGrid->cells[rows][cols]!=0)
-                printf("|%4d", theGrid->cells[rows][cols]);
+    for(int row=0;row<ROWS;row++) {
+        for(int col=0;col<COLS;col++) {
+            if(theGrid->cells[row][col]!=0)
+                printf("|%4d", theGrid->cells[row][col]);
             else
                 printf("|    ");
         }
@@ -34,29 +34,40 @@ void print_grid( game_grid *theGrid) {
 }
 
 void place_random(game_grid *theGrid) {
-    int tmp_array[ ROWS * COLS ]={NULL};
+    int tmp_array[ ROWS * COLS ]={0};
     int nbr_blank_space_locations=0;
     
-    for(int rows=0;rows<ROWS;rows++) {
-        for(int cols=0;cols<COLS;cols++) {
-            if(theGrid->cells[rows][cols]==0){
-                tmp_array[nbr_blank_space_locations] = (rows * COLS)+cols+1;
+    // Walk through the grid and save the positions where blanks exist
+    for(int row=0;row<ROWS;row++) {
+        for(int col=0;col<COLS;col++) {
+            if(theGrid->cells[row][col]==0){
+                tmp_array[nbr_blank_space_locations]=(row*COLS)+col+1;
                 nbr_blank_space_locations++;
             }
-                //printf("%d:%d\n", (rows * COLS)+cols+1,theGrid->cells[rows][cols]); 
         }
     }
 
-    int r = rand() % nbr_blank_space_locations;
-    //int theValue = tmp_array[r] / ROWS + tmp_array % r;
-    theGrid->cells[tmp_array[r] % r][tmp_array[r] / ROWS] = 2;
-    //printf("Random cell nbr: %d\n",theValue); 
+    int r = rand() % nbr_blank_space_locations; // Pick a random blank slot
+
+    int newcol = tmp_array[r] / ROWS;
+    int newrow = (tmp_array[r] % r);
+    
+    theGrid->cells[newcol][newrow] = 2;
+
+    printf("writing row:%d col:%d", 
+        newrow,
+        newcol);
 }
 
 
 int main(int argc, char **argv) {
       
     game_grid grid={.cells={0}, .score=0, .game_running=true};
+
+    // Testing
+    grid.cells[2][1] = 16;
+    grid.cells[1][2] = 32;
+    
 
     while(grid.game_running){
         print_grid(&grid);
@@ -92,4 +103,3 @@ int main(int argc, char **argv) {
 
     return 0;
 }
-
