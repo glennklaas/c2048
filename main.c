@@ -8,8 +8,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <time.h>
 
-#define ROWS 5
+#define ROWS 4
 #define COLS 4
 
 typedef struct game_grid{ 
@@ -34,29 +35,49 @@ void print_grid( game_grid *theGrid) {
 }
 
 void place_random(game_grid *theGrid) {
+    srand(time(NULL));
     int tmp_array[ ROWS * COLS ]={0};
     int nbr_blank_space_locations=0;
     
-    // Walk through the grid and save the positions where blanks exist
+    // Walk through the grid and save the positions of blank cells into a flat temp array.
     for(int row=0;row<ROWS;row++) {
         for(int col=0;col<COLS;col++) {
             if(theGrid->cells[row][col]==0){
                 tmp_array[nbr_blank_space_locations]=(row*COLS)+col+1;
                 nbr_blank_space_locations++;
+            } else {
+                printf("Skipping row:%d col:%d\n", row, col);
             }
         }
     }
 
-    int r = rand() % nbr_blank_space_locations; // Pick a random blank slot
+/*
+      0   1   2   3
+    _________________
+ 0  | 1 | 2 | 3 | 4 |
+    _________________
+ 1  | 5 | 6 | 7 | 8 |
+    _________________
+ 2  | 9 | 10| 11| 12|
+    _________________
+ 3  | 13| 14| 15| 16|
+    _________________
 
-    int newcol = tmp_array[r] / ROWS;
-    int newrow = (tmp_array[r] % r);
-    
-    theGrid->cells[newcol][newrow] = 2;
+*/
 
-    printf("writing row:%d col:%d", 
-        newrow,
-        newcol);
+    // Now that we know how many blanks exist, pick one of themn at random 
+    int r = rand() % (nbr_blank_space_locations - 1); // Pick a random blank slot
+    int newrow = (tmp_array[r] / ROWS);
+    int newcol = 1 + (1 + tmp_array[r]) % COLS;
+
+    // 
+    int rnbr = rand() % 1;
+    if(rnbr == 0)
+        theGrid->cells[newrow][newcol] = 2;
+    else
+        theGrid->cells[newrow][newcol] = 4;
+
+    printf("writing col:%d row:%d\n", newcol, newrow);
 }
 
 
