@@ -51,6 +51,10 @@ void place_random(game_grid *theGrid) {
         }
     }
 
+    if(nbr_blank_space_locations==0) {
+        printf("No more spaces available.  GAME OVER\n");
+        exit(0);
+    }
 /*
       0   1   2   3
     _________________
@@ -65,11 +69,12 @@ void place_random(game_grid *theGrid) {
 
 */
 
-    // Now that we know how many blanks exist, pick one of themn at random 
+    // Now that we know how many blanks exist, pick one of them at random 
     int r = rand() % (nbr_blank_space_locations - 1); // Pick a random blank slot
-    int newrow = (tmp_array[r] / ROWS);
-    int newcol = 1 + (1 + tmp_array[r]) % COLS;
-
+    //int newrow = (tmp_array[r] / ROWS);
+    //int newcol = 1 + (1 + tmp_array[r]) % COLS;
+    int newrow = tmp_array[r] / ROWS;
+    int newcol = (tmp_array[r]%ROWS)-1;
     // 
     int rnbr = rand() % 1;
     if(rnbr == 0)
